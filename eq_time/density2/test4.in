@@ -1,0 +1,6 @@
+N1      5
+L       7.0
+DELTA   0.14
+BETA    0.25
+NSTEPS  20000
+BINSTEP 10
