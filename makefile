@@ -1,5 +1,5 @@
-NAME = isothermal
-TARGET = $(NAME)/$(NAME)
+NAME = simulation
+TARGET = $(NAME)
 OBJS = $(NAME).o mc.o
 #CC = icpc
 CC = g++

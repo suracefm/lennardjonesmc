@@ -1,0 +1,8 @@
+N1      5
+L       6.3
+DELTAIN 0.09
+BETA    0.5
+MCTIME  100000
+BTIME   50000
+BINMIN  50
+

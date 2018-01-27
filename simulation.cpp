@@ -10,39 +10,23 @@
 
 using namespace std;
 
-
-void strtoin(string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &BTIME, int &BINMIN){
-        if (line.length()>8){
-               	istringstream iss(line.substr(8));
-                if (line.substr(0,8)=="N1      ") {iss >> N1;}
-                else if (line.substr(0,8)=="L       ") {iss >> L;}
-                else if (line.substr(0,8)=="DELTA   ") {iss >> DELTA;}
-                else if (line.substr(0,8)=="BETA    ") {iss >> BETA;}
-		else if (line.substr(0,8)=="MCTIME  ") {iss >> MCTIME;}
-		else if (line.substr(0,8)=="BTIME   ") {iss >> BTIME;}
-		else if (line.substr(0,8)=="BINMIN  ") {iss >> BINMIN;}
-        }
-}
-
-
-int main(int argc, char* argv[]){
- if(argc != 3) {
-        std::cerr << "Usage: " << argv[0]
-                << " file.in file.out " << std::endl;
+int main(int argc, char* argv[])
+{
+    // Read input
+    if(argc != 3) {
+        std::cerr << "Usage: " << argv[0]<< " file.in file.out " << std::endl;
         return 1;
     }
-
-  int N1, MCTIME, BTIME, BINMIN;
-  double L, DELTA, BETA;
-
-  ifstream input_file (argv[1]);
-  if (input_file.is_open())
-  {
+    int N1, MCTIME, BTIME, BINMIN;
+    double L, DELTA, BETA;
+    ifstream input_file (argv[1]);
+    if (input_file.is_open()){
    	string line;
-        while (std::getline(input_file, line)){strtoin(line, N1, L, DELTA, BETA, MCTIME, BTIME, BINMIN);}
-    input_file.close();
-  }
-  else cout<<"Unable to open file.\n";
+        while (std::getline(input_file, line)){
+	    strtoin(line, N1, L, DELTA, BETA, MCTIME, BTIME, BINMIN);}
+        input_file.close();
+    }
+    else cout<<"Unable to open file.\n";
 
     srand(time(NULL));
     int N = N1*N1*N1;
@@ -56,10 +40,7 @@ int main(int argc, char* argv[]){
         pos[3*i+1] = ((i%(N1*N1))/N1)/n1;
         pos[3*i+2] = (i%N1)/n1;
     }
-    double energy = 0;
-    double vir = 0;
-    double rhok = 0;
-    double rmsix;
+    double energy = 0, vir=0, rhok=0, rmsix;
     for (int i=0; i<N; i++){
         for (int j=i+1; j<N; j++){
 		rmsix=r_six(pos+3*i, pos+3*j, L);
@@ -72,91 +53,87 @@ int main(int argc, char* argv[]){
     vir/=N;
     rhok/=N;
 
-    int count_accept, count_times, counter;
-    double energy1, energy2, energy3, energy4, vir1, vir2, rhok, L, energybin, virbin, rhokbin;
-
-
+    // Writing input data to output
     ofstream outfile;
     outfile.open (argv[2]);
     outfile<<"# N1 "<<N1<<endl;
     outfile<<"# L "<<L<<endl;
-    outfile<<"# DELTA "<<DELTA<<endl;
+    outfile<<"# DELTAIN "<<DELTA<<endl;
     outfile<<"# BETA "<<BETA<<endl;
     outfile<<"# MCTIME "<<MCTIME<<endl;
     outfile<<"# BTIME "<<BTIME<<endl;
-    outfile<<"# BINMIN "<<BTIME<<endl;
-    //outfile<<"#\n#BINSTEP\tvar\tk\tacceptance"<<endl;
-
-    count_accept=0;
-    count_times=0;
-    entot=0;
-    ensqtot=0;
-    energybin=0;
-    virbin=0;
-    rhokbin=0;    
-    counter=0;
+    outfile<<"# BINMIN "<<BINMIN<<endl;
 
 
-
-    // Thermalization
-
+    // THERMALIZATION
     outfile<<"#\n#\n# *****THERMALIZATION*****\n#\n# ENERGY\tVIRIAL\tRHO"<<endl;
-    int thermtime=0;    
+    int count_accept=0, count_times=0, counter=0, thermtime =0;
+    double energybin, virbin, rhokbin=1;   
     while(rhokbin>0){
 	energybin=0;
 	virbin=0;
 	rhokbin=0;
-	for(int i=0; i<BTIME; i++){
-	    mcmove(pos, energy, vir, rhok, k, N, DELTA, BETA, L, count_accept, count_times);
+	for(int i=0; i<BINMIN; i++){
+	    thermalizationmove(pos, energy, vir, rhok, k, N, DELTA, BETA, L, count_accept, count_times);
 	    thermtime++;
 	    energybin+=energy;
 	    virbin+=vir;
 	    rhokbin+=rhok;
-	 }
-	outfile << energybin/BTIME<<"\t"<<virbin/BTIME<<"\t"<<rhokbin/BTIME<<endl;
 	}
-	thermtime*=2;
-    for(int i=0;i<thermtime; i++){
+	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<"\t"<<rhokbin/BINMIN<<endl;
+	count_accept=0;
+	count_times=0;
+    }
+    for(int i=0;i<thermtime; i+=BINMIN){
 	energybin=0;
 	virbin=0;
 	rhokbin=0;
-	for(int i=0; i<BTIME; i++){
-	    mcmove(pos, energy, vir, rhok, k, N, DELTA, BETA, L, count_accept, count_times);
-	    thermtime++;
+	for(int i=0; i<BINMIN; i++){
+	    thermalizationmove(pos, energy, vir, rhok, k, N, DELTA, BETA, L, count_accept, count_times);
 	    energybin+=energy;
 	    virbin+=vir;
 	    rhokbin+=rhok;
 	 }
-	outfile << energybin/BTIME<<"\t"<<virbin/BTIME<<"\t"<<rhokbin/BTIME<<endl;
+	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<"\t"<<rhokbin/BINMIN<<endl;
+    }
+    outfile <<"#\n# THERMALIZATION TIME "<<thermtime<<endl;
+    outfile <<"# DELTA "<<DELTA<<endl;
+
+
+    // BINNING TECHNIQUE: error bar estimate
+    outfile<<"#\n#\n# ***** ERROR BAR ESTIMATE *****\n#\n# ENERGY\tVIRIAL"<<endl;
+    double entot=0, ensqtot=0, virtot=0;
+    for(int i=0; i<BTIME; i+=BINMIN){
+	energybin=0;
+	virbin=0;
+	rhokbin=0;
+	for(int j=0; j<BINMIN; j++){
+	    mcmove(pos, energy, vir, N, DELTA, BETA, L, count_accept, count_times);
+	    energybin+=energy;
+	    virbin+=vir;
+	    entot+=energy;
+	    ensqtot+=square(energy);
+	    virtot+=vir;
+	    counter++;
 	}
-    outfile <<"#\n#THERMALIZATION TIME "<<thermtime<<endl;
-
-
-
-
-	    for(int i=-EQTIME; i<NSTEPS; i++){
-		mcmove(pos, energy, vir, rhoN, k, N, DELTA, BETA, L, count_accept, count_times);
-		if (i>=0){
-			energybin+=energy;
-			if (i%BINSTEP == BINSTEP-1){
-			    energybin/=BINSTEP;
-			    entot+=energybin;
-			    ensqtot+=square(energybin);
-			    counter++;
-			    energybin=0;
-			}
-		}
-	    }
-	double var = (ensqtot/counter-square(entot/counter))/(counter-1);
-    	outfile<<BINSTEP<<"\t"<<sqrt(var)<<"\t"<<counter<<"\t"<<double(count_accept)/double(count_times)<<endl;
-	for (int i=0; i<N; i++){
-        	pos[3*i] = (i/(N1*N1))/n1;
-        	pos[3*i+1] = ((i%(N1*N1))/N1)/n1;
-        	pos[3*i+2] = (i%N1)/n1;
-    	}
+	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<endl;
     }
 
-   outfile<<"# ACCEPTANCE"<<double(count_accept)/double(count_times)<<endl;
+
+    // MC SIMULATION
+    for(int i=BTIME; i<MCTIME; i++){
+	mcmove(pos, energy, vir, N, DELTA, BETA, L, count_accept, count_times);
+	entot+=energy;
+	ensqtot+=square(energy);
+	virtot+=vir;
+	counter++;
+    }
+
+    outfile<<"# ACCEPTANCE "<<double(count_accept)/double(count_times)<<endl;
+    outfile<<"# ENERGY "<<entot/counter<<endl;
+    outfile<<"# ENERGYSQUARE "<<ensqtot/counter<<endl;
+    outfile<<"# VIRIALTERM "<<vir/counter<<endl;
+    outfile<<"# MC TIME "<<counter<<endl;
     
     outfile.close();
 

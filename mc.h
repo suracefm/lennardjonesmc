@@ -1,9 +1,11 @@
 #ifndef MC_H
 #define MC_H
 
-
+#include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <math.h>
+#include <sstream>
 
 double square(double x);
 
@@ -19,11 +21,12 @@ double rang();
 
 double nni_delta(double i, double j, double L);
 
-//double pair_energy(double i[], double j[], double L);
-
 double r_six(double i[], double j[], double L);
 
-int mcmove(double old[], double& energy, double& vir, double& rhoN, double k[], int N, double DELTA, double BETA, double L, int& count_accept, int& count_times);
+int thermalizationmove(double old[], double& energy, double& vir, double& rhok, double k[], int N, double DELTA, double BETA, double L, int& count_accept, int& count_times);
 
+int mcmove(double old[], double& energy, double& vir, int N, double DELTA, double BETA, double L, int& count_accept, int& count_times);
+
+void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &BTIME, int &BINMIN);
 
 #endif // MC_H
