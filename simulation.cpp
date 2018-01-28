@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 	 }
 	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<"\t"<<rhokbin/BINMIN<<endl;
     }
-    outfile <<"#\n# THERMALIZATION TIME "<<thermtime<<endl;
+    outfile <<"#\n# THERMTIME "<<thermtime<<endl;
     outfile <<"# DELTA "<<DELTA<<endl;
 
 
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 	    virtot+=vir;
 	    counter++;
 	}
-	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<endl;
+	outfile << energybin/BINMIN<<"\t"<<virbin/BINMIN<<"\t"<<endl;
     }
 
 
@@ -132,8 +132,8 @@ int main(int argc, char* argv[])
     outfile<<"# ACCEPTANCE "<<double(count_accept)/double(count_times)<<endl;
     outfile<<"# ENERGY "<<entot/counter<<endl;
     outfile<<"# ENERGYSQUARE "<<ensqtot/counter<<endl;
-    outfile<<"# VIRIALTERM "<<vir/counter<<endl;
-    outfile<<"# MC TIME "<<counter<<endl;
+    outfile<<"# VIRIAL1 "<<vir/counter<<endl;
+    outfile<<"# MCTIME "<<counter<<endl;
     
     outfile.close();
 
