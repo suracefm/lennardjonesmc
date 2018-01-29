@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         for (int j=i+1; j<N; j++){
 		rmsix=r_six(pos+3*i, pos+3*j, L);
 		energy+=4*(square(rmsix)-rmsix);
-		vir+=24*(2*square(rmsix)-rmsix);
+		vir+=8*(2*square(rmsix)-rmsix);
         }
 	rhok+=cos(dot(k,pos+3*i));
     }
@@ -100,13 +100,12 @@ int main(int argc, char* argv[])
     outfile <<"# DELTA "<<DELTA<<endl;
 
 
-    // BINNING TECHNIQUE: error bar estimate
+    // MC SIMLULATION
     outfile<<"#\n#\n# ***** ERROR BAR ESTIMATE *****\n#\n# ENERGY\tVIRIAL"<<endl;
     double entot=0, ensqtot=0, virtot=0;
     for(int i=0; i<BTIME; i+=BINMIN){
 	energybin=0;
 	virbin=0;
-	rhokbin=0;
 	for(int j=0; j<BINMIN; j++){
 	    mcmove(pos, energy, vir, N, DELTA, BETA, L, count_accept, count_times);
 	    energybin+=energy;

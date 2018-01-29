@@ -1,8 +1,8 @@
 NAME = simulation
 TARGET = $(NAME)
 OBJS = $(NAME).o mc.o
-CC = icpc
-#CC = g++
+#CC = icpc
+CC = g++
 DEBUG = -g
 
 # -funroll-loops
