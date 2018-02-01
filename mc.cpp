@@ -115,7 +115,7 @@ int thermalizationmove(double old[], double& energy, double& vir, double& rhok, 
 }
 
 
-void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &BTIME, int &BINMIN)
+void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &BTIME, int &THBIN)
 {
     if (line.length()>8){
      	std::istringstream iss(line.substr(8));
@@ -125,6 +125,6 @@ void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, 
         else if (line.substr(0,8)=="BETA    ") {iss >> BETA;}
 	else if (line.substr(0,8)=="MCTIME  ") {iss >> MCTIME;}
 	else if (line.substr(0,8)=="BTIME   ") {iss >> BTIME;}
-	else if (line.substr(0,8)=="BINMIN  ") {iss >> BINMIN;}
+	else if (line.substr(0,8)=="THBIN   ") {iss >> THBIN;}
     }
 }

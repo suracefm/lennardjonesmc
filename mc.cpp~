@@ -55,11 +55,11 @@ int mcmove(double old[], double& energy, double& vir, int N, double DELTA, doubl
 	    r_six_old=r_six(old+3*i, old+3*j, L);
 	    if (r_six_old>cutoff){
 		delta_energy+=4*(-square(r_six_old)+r_six_old);
-		delta_vir+=-24*(-2*square(r_six_old)+r_six_old);
+		delta_vir+=8*(-2*square(r_six_old)+r_six_old);
 	    }
 	    if (r_six_new>cutoff){
  		delta_energy+=4*(square(r_six_new)-r_six_new);
-		delta_vir+=-24*(2*square(r_six_new)-r_six_new);
+		delta_vir+=8*(2*square(r_six_new)-r_six_new);
 	    }
 	}
     }
@@ -92,11 +92,11 @@ int thermalizationmove(double old[], double& energy, double& vir, double& rhok, 
 	    r_six_old=r_six(old+3*i, old+3*j, L);
 	    if (r_six_old>cutoff){
 		delta_energy+=4*(-square(r_six_old)+r_six_old);
-		delta_vir+=-24*(-2*square(r_six_old)+r_six_old);
+		delta_vir+=8*(-2*square(r_six_old)+r_six_old);
 	    }
 	    if (r_six_new>cutoff){
  		delta_energy+=4*(square(r_six_new)-r_six_new);
-		delta_vir+=-24*(2*square(r_six_new)-r_six_new);
+		delta_vir+=8*(2*square(r_six_new)-r_six_new);
 	    }
 	}
     }
@@ -115,7 +115,7 @@ int thermalizationmove(double old[], double& energy, double& vir, double& rhok, 
 }
 
 
-void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &BTIME, int &BINMIN)
+void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, int &MCTIME, int &THBIN)
 {
     if (line.length()>8){
      	std::istringstream iss(line.substr(8));
@@ -124,7 +124,6 @@ void strtoin(std::string line, int &N1, double &L, double &DELTA, double &BETA, 
         else if (line.substr(0,8)=="DELTAIN ") {iss >> DELTA;}
         else if (line.substr(0,8)=="BETA    ") {iss >> BETA;}
 	else if (line.substr(0,8)=="MCTIME  ") {iss >> MCTIME;}
-	else if (line.substr(0,8)=="BTIME   ") {iss >> BTIME;}
-	else if (line.substr(0,8)=="BINMIN  ") {iss >> BINMIN;}
+	else if (line.substr(0,8)=="THBIN   ") {iss >> THBIN;}
     }
 }
