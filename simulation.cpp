@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 
 
     // MC SIMLULATION
-    outfile<<"#\n#\n# ***** ERROR BAR ESTIMATE *****\n#\n# ENERGY\tVIRIAL"<<endl;
+    outfile<<"#\n#\n# ***** ERROR BAR ESTIMATE *****\n#\n# ENERGY\t ENERGYSQUARE\tVIRIAL"<<endl;
     for(int i=0; i<MCTIME; i+=BTIME){
 	energybin=0;
 	ensqbin=0;
