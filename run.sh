@@ -1,4 +1,4 @@
-for f in ./data/phasediag2/*.in
+for f in ./data/size_scaling/*.in
 do
 	./simulation $f ${f%.*}.out
 	echo ${f%.*}

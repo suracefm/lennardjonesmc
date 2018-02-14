@@ -101,6 +101,8 @@ int main(int argc, char* argv[])
 
 
     // MC SIMLULATION
+    time_t begin, end;
+    time(&begin);
     outfile<<"#\n#\n# ***** ERROR BAR ESTIMATE *****\n#\n# ENERGY\t ENERGYSQUARE\tVIRIAL"<<endl;
     for(int i=0; i<MCTIME; i+=BTIME){
 	energybin=0;
@@ -115,10 +117,11 @@ int main(int argc, char* argv[])
 	}
 	outfile << energybin/BTIME<<"\t"<< ensqbin/BTIME<<"\t"<<virbin/BTIME<<endl;
     }
-
+    time(&end);
 
     outfile<<"# ACCEPTANCE "<<double(count_accept)/double(count_times)<<endl;
     outfile<<"# MCTIME "<<counter<<endl;
+    outfile<<"# SIMTIME "<<difftime(end,begin)<<endl; //in seconds, thermalization time not included
     
     outfile.close();
 
