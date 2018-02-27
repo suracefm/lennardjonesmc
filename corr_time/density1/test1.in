@@ -1,7 +1,0 @@
-N1      5
-L       6.3
-DELTA   0.09
-BETA    0.5
-NSTEPS  1000000
-EQTIME  10000
-
