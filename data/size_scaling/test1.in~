@@ -1,0 +1,8 @@
+N1      5
+L       6.3
+DELTAIN 0.09
+BETA    0.5
+MCTIME  3600000
+BTIME   1000
+THBIN   50
+

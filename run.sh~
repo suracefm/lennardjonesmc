@@ -1,0 +1,5 @@
+for f in ./data/phasediag3/*.in
+do
+	./simulation $f ${f%.*}.out
+	echo ${f%.*}
+done
